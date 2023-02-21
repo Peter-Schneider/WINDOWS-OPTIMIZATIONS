@@ -1,13 +1,13 @@
-<# 
+<#
 .SYNOPSIS
-    This Script desuboptimize a lot W10 & W11 TCP Settings.   
- 
- .NOTES 
+    This Script desuboptimize a lot W10 & W11 TCP Settings.
+
+ .NOTES
     Version:        1.11
     Author:         MysticFoxDE (Alexander Fuchs)
     Creation Date:  07.02.2023
 
-.LINK 
+.LINK
     https://administrator.de/tutorial/wie-man-das-windows-10-und-11-tcp-handling-wieder-desuboptimieren-kann-5529700198.html#comment-5584260697
     https://community.spiceworks.com/topic/post/10299845
 #>
@@ -22,19 +22,19 @@ $FULLYCOMPLETED = $true
 $BAKLOGPATH = "C:\BACKUP"
 $BAKLOGFILENAME = "WINDOWS10AND11-NETWORK-DESUBOPTIMIZATION.log"
 $BAKLOGDATE = Get-Date
-if (!(Test-Path $BAKLOGPATH)) 
+if (!(Test-Path $BAKLOGPATH))
   {New-Item -Path $BAKLOGPATH -ItemType Directory}
 
 Write-Host ("Create a backup of the existing configuration under " + $BAKLOGPATH + "\" + $BAKLOGFILENAME) -ForegroundColor Cyan
 "************************************************************************************************************" >> $BAKLOGPATH\$BAKLOGFILENAME
 "*** Beginning of the configuration-backup from " + $BAKLOGDATE >> $BAKLOGPATH\$BAKLOGFILENAME
-"************************************************************************************************************" >> $BAKLOGPATH\$BAKLOGFILENAME  
-" " >> $BAKLOGPATH\$BAKLOGFILENAME  
-"Get-NetOffloadGlobalSetting: " >> $BAKLOGPATH\$BAKLOGFILENAME  
+"************************************************************************************************************" >> $BAKLOGPATH\$BAKLOGFILENAME
+" " >> $BAKLOGPATH\$BAKLOGFILENAME
+"Get-NetOffloadGlobalSetting: " >> $BAKLOGPATH\$BAKLOGFILENAME
 Get-NetOffloadGlobalSetting >> $BAKLOGPATH\$BAKLOGFILENAME
-"------------------------------------------------------------------------------------------------------------" >> $BAKLOGPATH\$BAKLOGFILENAME  
-"netsh int tcp show global: " >> $BAKLOGPATH\$BAKLOGFILENAME 
-netsh int tcp show global >> $BAKLOGPATH\$BAKLOGFILENAME 
+"------------------------------------------------------------------------------------------------------------" >> $BAKLOGPATH\$BAKLOGFILENAME
+"netsh int tcp show global: " >> $BAKLOGPATH\$BAKLOGFILENAME
+netsh int tcp show global >> $BAKLOGPATH\$BAKLOGFILENAME
 "------------------------------------------------------------------------------------------------------------" >> $BAKLOGPATH\$BAKLOGFILENAME
 "netsh int tcp show supplemental:" >> $BAKLOGPATH\$BAKLOGFILENAME
 netsh int tcp show supplemental >> $BAKLOGPATH\$BAKLOGFILENAME
@@ -66,11 +66,11 @@ else
 "------------------------------------------------------------------------------------------------------------" >> $BAKLOGPATH\$BAKLOGFILENAME
 "Status ACK-Frequency: (Registry)" >> $BAKLOGPATH\$BAKLOGFILENAME
 $NICs = Get-NetAdapter -Physical | Select-Object DeviceID, Name
-foreach ($adapter in $NICs) 
+foreach ($adapter in $NICs)
   {
   $NICGUID = $adapter | Select-Object DeviceID | Select DeviceID -ExpandProperty DeviceID | Out-String -Stream
-  $NICNAME = $adapter | Select-Object Name | Select Neme -ExpandProperty Name | Out-String -Stream
-  $REGKEYPATH = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\$NICGUID\" | Out-String -Stream 
+  $NICNAME = $adapter | Select-Object Name | Select Name -ExpandProperty Name | Out-String -Stream
+  $REGKEYPATH = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\$NICGUID\" | Out-String -Stream
   $TARGETVALUE = 1
   $CHECKVALUE = Get-ItemProperty -Path "$REGKEYPATH" -Name "TcpAckFrequency" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty "TcpAckFrequency"
   if (($CHECKVALUE -ne $null) -or ($CHECKVALUE.Length -ne 0))
@@ -89,11 +89,11 @@ foreach ($adapter in $NICs)
 "------------------------------------------------------------------------------------------------------------" >> $BAKLOGPATH\$BAKLOGFILENAME
 "Status TCP-Delay: (Registry)" >> $BAKLOGPATH\$BAKLOGFILENAME
 $NICs = Get-NetAdapter -Physical | Select-Object DeviceID, Name
-foreach ($adapter in $NICs) 
+foreach ($adapter in $NICs)
   {
   $NICGUID = $adapter | Select-Object DeviceID | Select DeviceID -ExpandProperty DeviceID | Out-String -Stream
-  $NICNAME = $adapter | Select-Object Name | Select Neme -ExpandProperty Name | Out-String -Stream
-  $REGKEYPATH = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\$NICGUID\" | Out-String -Stream 
+  $NICNAME = $adapter | Select-Object Name | Select Name -ExpandProperty Name | Out-String -Stream
+  $REGKEYPATH = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\$NICGUID\" | Out-String -Stream
   $TARGETVALUE = 1
   $CHECKVALUE = Get-ItemProperty -Path "$REGKEYPATH" -Name "TcpNoDelay" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty "TcpNoDelay"
   if (($CHECKVALUE -ne $null) -or ($CHECKVALUE.Length -ne 0))
@@ -112,7 +112,7 @@ foreach ($adapter in $NICs)
 "------------------------------------------------------------------------------------------------------------" >> $BAKLOGPATH\$BAKLOGFILENAME
 "************************************************************************************************************" >> $BAKLOGPATH\$BAKLOGFILENAME
 "*** End of the configuration-backup from " + $BAKLOGDATE >> $BAKLOGPATH\$BAKLOGFILENAME
-"************************************************************************************************************" >> $BAKLOGPATH\$BAKLOGFILENAME 
+"************************************************************************************************************" >> $BAKLOGPATH\$BAKLOGFILENAME
 Write-Host ("Backup of the existing configuration is finished. :-)") -ForegroundColor Cyan
 
 # DISABLE PACKET COALESCING FILTER ON WINDOWS TCP-STACK
@@ -136,7 +136,7 @@ else
     {
     $DISABLEPCFOK = $false
     Write-Host ("  The PACKET COALESCING FILTER could not set to disabled. :-(") -ForegroundColor Red
-    if ($DEDAILEDDEBUG -eq "ON") 
+    if ($DEDAILEDDEBUG -eq "ON")
       {Write-Host $_ -ForegroundColor Red}
     }
   }
@@ -171,7 +171,7 @@ else
     {
     $DISABLERSSOK = $false
     Write-Host ("  The RECEIVE SIDE SCALING could not set to disabled. :-(") -ForegroundColor Red
-    if ($DEDAILEDDEBUG -eq "ON") 
+    if ($DEDAILEDDEBUG -eq "ON")
       {Write-Host $_ -ForegroundColor Red}
     }
   }
@@ -206,7 +206,7 @@ else
     {
     $DISABLERSCOK = $false
     Write-Host ("  The RECEIVE SEGMENT COALESCING could not set to disabled. :-(") -ForegroundColor Red
-    if ($DEDAILEDDEBUG -eq "ON") 
+    if ($DEDAILEDDEBUG -eq "ON")
       {Write-Host $_ -ForegroundColor Red}
     }
   }
@@ -235,21 +235,21 @@ try
     {
     $CHANGETCPCCOK = $false
     Write-Host "  The Update of the congestionprovider of the Datacenter TCP profile to DCTCP was NOT successfully. :-(" -ForegroundColor Red
-    Write-Host ("  " + $COMMANDOUTPUT) -ForegroundColor Red 
+    Write-Host ("  " + $COMMANDOUTPUT) -ForegroundColor Red
     }
   }
 catch
   {
   $CHANGETCPCCOK = $false
   Write-Host ("  The Update of the congestionprovider of the Datacenter TCP profile to DCTCP was NOT successfully. :-(") -ForegroundColor Red
-  if ($DEDAILEDDEBUG -eq "ON") 
+  if ($DEDAILEDDEBUG -eq "ON")
     {Write-Host $_ -ForegroundColor Red}
   }
 
 Write-Host "  Try to enable ECN" -ForegroundColor Gray
 try
   {
-  $COMMANDOUTPUT = Invoke-Expression -Command "netsh int tcp set global ECN=Enabled" -ErrorAction Stop | Out-String -Stream 
+  $COMMANDOUTPUT = Invoke-Expression -Command "netsh int tcp set global ECN=Enabled" -ErrorAction Stop | Out-String -Stream
   if ($COMMANDOUTPUT -eq "OK.")
     {
     Write-Host "  Enable ECN was successfully. :-)" -ForegroundColor Green
@@ -258,14 +258,14 @@ try
     {
     $CHANGETCPCCOK = $false
     Write-Host "  Try to enable ECN was NOT successfully. :-(" -ForegroundColor Red
-    Write-Host ("  " + $COMMANDOUTPUT) -ForegroundColor Red 
+    Write-Host ("  " + $COMMANDOUTPUT) -ForegroundColor Red
     }
   }
 catch
   {
   $CHANGETCPCCOK = $false
   Write-Host ("  Try to enable ECN was NOT successfully was NOT successfully. :-(") -ForegroundColor Red
-  if ($DEDAILEDDEBUG -eq "ON") 
+  if ($DEDAILEDDEBUG -eq "ON")
     {Write-Host $_ -ForegroundColor Red}
   }
 
@@ -280,7 +280,7 @@ if ($CHANGETCPCCOK -eq $true)
     Write-Host "TCP congestion controll can't finished successfully. :-(" -ForegroundColor Red
     }
 
-# CHANGE TCP PROFILE TO DATACENTERCUSTOM 
+# CHANGE TCP PROFILE TO DATACENTERCUSTOM
 Write-Host "Start TCP profile optimization" -ForegroundColor Cyan
 Write-Host "  Check if the key already exists in the registry." -ForegroundColor Gray
 $CHANGETCPPROFILEOK = $false
@@ -311,7 +311,7 @@ if (($CHECKVALUE -ne $null) -or ($CHECKVALUE.Length -ne 0))
     catch
       {
       Write-Host ("  The registry key could not be updated due to an error. :-(") -ForegroundColor Red
-      if ($DEDAILEDDEBUG -eq "ON") 
+      if ($DEDAILEDDEBUG -eq "ON")
           {Write-Host $_ -ForegroundColor Red}
       }
     }
@@ -328,7 +328,7 @@ else
   catch
     {
     Write-Host ("  The registry key could not be created due to an error. :-(") -ForegroundColor Red
-    if ($DEDAILEDDEBUG -eq "ON") 
+    if ($DEDAILEDDEBUG -eq "ON")
       {Write-Host $_ -ForegroundColor Red}
     }
   }
@@ -346,7 +346,7 @@ else
 $DISABLERSSOK = $true
 Write-Host "Start disabling RSS on all NIC's" -ForegroundColor Cyan
 Write-Host "  Check if NIC's with RSS support are avaible on this System." -ForegroundColor Gray
-$NICs = Get-NetAdapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*RSS"} 
+$NICs = Get-NetAdapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*RSS"}
 $NICsWITHRSS = $NICs | Measure-Object -Line | Select-Object Lines | Select Lines -ExpandProperty Lines
 
 if ($NICsWITHRSS -eq 0)
@@ -356,13 +356,13 @@ if ($NICsWITHRSS -eq 0)
 else
   {
   Write-Host ("  " + $NICsWITHRSS + " NIC's found on this System that support RSS") -ForegroundColor Yellow
-  foreach ($adapter in $NICs) 
+  foreach ($adapter in $NICs)
     {
-    $NICNAME = $adapter | Select-Object Name | Select Neme -ExpandProperty Name | Out-String -Stream
-    $RSSVALUE = $adapter | Select-Object RegistryValue | Select RegistryValue -ExpandProperty RegistryValue | Out-String -Stream 
-  
+    $NICNAME = $adapter | Select-Object Name | Select Name -ExpandProperty Name | Out-String -Stream
+    $RSSVALUE = $adapter | Select-Object RegistryValue | Select RegistryValue -ExpandProperty RegistryValue | Out-String -Stream
+
     Write-Host ("    Check RSS Status of NIC " + $NICNAME + " .") -ForegroundColor Gray
-  
+
     if ($RSSVALUE -eq "0")
       {
       Write-Host ("    RSS on NIC " + $NICNAME + " is already disabled, so, nothing to do. :-)") -ForegroundColor Green
@@ -379,7 +379,7 @@ else
         {
         $DISABLERSSOK = $false
         Write-Host ("  The RSS on NIC " + $NICNAME + ", could not set to disabled. :-(") -ForegroundColor Red
-        if ($DEDAILEDDEBUG -eq "ON") 
+        if ($DEDAILEDDEBUG -eq "ON")
           {Write-Host $_ -ForegroundColor Red}
         }
       }
@@ -399,7 +399,7 @@ if ($DISABLERSSOK -eq $true)
 $DISABLERSCIPV4OK = $true
 Write-Host "Start disabling RSC-IPv4 on all NIC's" -ForegroundColor Cyan
 Write-Host "  Check if NIC's with RSC-IPv4 support are avaible on this System." -ForegroundColor Gray
-$NICs = Get-NetAdapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*RscIPv4"} 
+$NICs = Get-NetAdapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*RscIPv4"}
 $NICsWITHRSCIPV4 = $NICs | Measure-Object -Line | Select-Object Lines | Select Lines -ExpandProperty Lines
 
 if ($NICsWITHRSCIPV4 -eq 0)
@@ -409,13 +409,13 @@ if ($NICsWITHRSCIPV4 -eq 0)
 else
   {
   Write-Host ("  " + $NICsWITHRSCIPV4 + " NIC's found on this System that support RSC-IPv4") -ForegroundColor Yellow
-  foreach ($adapter in $NICs) 
+  foreach ($adapter in $NICs)
     {
-    $NICNAME = $adapter | Select-Object Name | Select Neme -ExpandProperty Name | Out-String -Stream
-    $RSCVALUE = $adapter | Select-Object RegistryValue | Select RegistryValue -ExpandProperty RegistryValue | Out-String -Stream 
-  
+    $NICNAME = $adapter | Select-Object Name | Select Name -ExpandProperty Name | Out-String -Stream
+    $RSCVALUE = $adapter | Select-Object RegistryValue | Select RegistryValue -ExpandProperty RegistryValue | Out-String -Stream
+
     Write-Host ("    Check RSC-IPv4 Status of NIC " + $NICNAME + " .") -ForegroundColor Gray
-  
+
     if ($RSCVALUE -eq "0")
       {
       Write-Host ("    RSC-IPv4 on NIC " + $NICNAME + " is already disabled, so, nothing to do. :-)") -ForegroundColor Green
@@ -432,7 +432,7 @@ else
         {
         $DISABLERSCIPV4OK = $false
         Write-Host ("  The RSC-IPv4 on NIC " + $NICNAME + ", could not set to disabled. :-(") -ForegroundColor Red
-        if ($DEDAILEDDEBUG -eq "ON") 
+        if ($DEDAILEDDEBUG -eq "ON")
           {Write-Host $_ -ForegroundColor Red}
         }
       }
@@ -452,7 +452,7 @@ if ($DISABLERSCIPV4OK -eq $true)
 $DISABLERSCIPV6OK = $true
 Write-Host "Start disabling RSC-IPv6 on all NIC's" -ForegroundColor Cyan
 Write-Host "  Check if NIC's with RSC-IPv6 support are avaible on this System." -ForegroundColor Gray
-$NICs = Get-NetAdapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*RscIPv6"} 
+$NICs = Get-NetAdapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*RscIPv6"}
 $NICsWITHRSCIPV6 = $NICs | Measure-Object -Line | Select-Object Lines | Select Lines -ExpandProperty Lines
 
 if ($NICsWITHRSCIPV6 -eq 0)
@@ -462,13 +462,13 @@ if ($NICsWITHRSCIPV6 -eq 0)
 else
   {
   Write-Host ("  " + $NICsWITHRSCIPV6 + " NIC's found on this System that support RSC-IPv6") -ForegroundColor Yellow
-  foreach ($adapter in $NICs) 
+  foreach ($adapter in $NICs)
     {
-    $NICNAME = $adapter | Select-Object Name | Select Neme -ExpandProperty Name | Out-String -Stream
-    $RSCVALUE = $adapter | Select-Object RegistryValue | Select RegistryValue -ExpandProperty RegistryValue | Out-String -Stream 
-  
+    $NICNAME = $adapter | Select-Object Name | Select Name -ExpandProperty Name | Out-String -Stream
+    $RSCVALUE = $adapter | Select-Object RegistryValue | Select RegistryValue -ExpandProperty RegistryValue | Out-String -Stream
+
     Write-Host ("    Check RSC-IPv6 Status of NIC " + $NICNAME + " .") -ForegroundColor Gray
-  
+
     if ($RSCVALUE -eq "0")
       {
       Write-Host ("    RSC-IPv6 on NIC " + $NICNAME + " is already disabled, so, nothing to do. :-)") -ForegroundColor Green
@@ -485,7 +485,7 @@ else
         {
         $DISABLERSCIPV6OK = $false
         Write-Host ("  The RSC-IPv6 on NIC " + $NICNAME + ", could not set to disabled. :-(") -ForegroundColor Red
-        if ($DEDAILEDDEBUG -eq "ON") 
+        if ($DEDAILEDDEBUG -eq "ON")
           {Write-Host $_ -ForegroundColor Red}
         }
       }
@@ -504,15 +504,15 @@ if ($DISABLERSCIPV6OK -eq $true)
 # DISABLE FLOW CONTROL ON ALL NIC's
 Write-Host "Start disabling FLOW CONTROL on all NIC's" -ForegroundColor Cyan
 Write-Host "  Identify the NICs that actually support FLOW CONTROL." -ForegroundColor Gray
-$NICs = Get-NetAdapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*FlowControl"} 
+$NICs = Get-NetAdapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*FlowControl"}
 $DISABLEFCOK = $true
-foreach ($adapter in $NICs) 
+foreach ($adapter in $NICs)
   {
-  $NICNAME = $adapter | Select-Object Name | Select Neme -ExpandProperty Name | Out-String -Stream
-  $EEEVALUE = $adapter | Select-Object RegistryValue | Select RegistryValue -ExpandProperty RegistryValue | Out-String -Stream 
+  $NICNAME = $adapter | Select-Object Name | Select Name -ExpandProperty Name | Out-String -Stream
+  $EEEVALUE = $adapter | Select-Object RegistryValue | Select RegistryValue -ExpandProperty RegistryValue | Out-String -Stream
 
   Write-Host ("    Check FLOW CONTROL Status of NIC " + $NICNAME + " .") -ForegroundColor Gray
-  
+
   if ($EEEVALUE -eq "0")
     {
     Write-Host ("    The FLOW CONTROL is already disabled on NIC " + $NICNAME + ", so, nothing to do. :-)") -ForegroundColor Green
@@ -529,7 +529,7 @@ foreach ($adapter in $NICs)
       {
       $DISABLEFCOK = $false
       Write-Host ("  The FLOW CONTROL on NIC " + $NICNAME + ", could not set to disabled. :-(") -ForegroundColor Red
-      if ($DEDAILEDDEBUG -eq "ON") 
+      if ($DEDAILEDDEBUG -eq "ON")
         {Write-Host $_ -ForegroundColor Red}
       }
     }
@@ -547,15 +547,15 @@ if ($DISABLEFCOK -eq $true)
 # DISABLE INTERRUPT MODERATION ON ALL NIC's
 Write-Host "Start disabling INTERRUPT MODERATION on all NIC's" -ForegroundColor Cyan
 Write-Host "  Identify the NICs that actually support INTERRUPT MODERATION." -ForegroundColor Gray
-$NICs = Get-NetAdapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*InterruptModeration"} 
+$NICs = Get-NetAdapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*InterruptModeration"}
 $DISABLEIMOK = $true
-foreach ($adapter in $NICs) 
+foreach ($adapter in $NICs)
   {
-  $NICNAME = $adapter | Select-Object Name | Select Neme -ExpandProperty Name | Out-String -Stream
-  $EEEVALUE = $adapter | Select-Object RegistryValue | Select RegistryValue -ExpandProperty RegistryValue | Out-String -Stream 
+  $NICNAME = $adapter | Select-Object Name | Select Name -ExpandProperty Name | Out-String -Stream
+  $EEEVALUE = $adapter | Select-Object RegistryValue | Select RegistryValue -ExpandProperty RegistryValue | Out-String -Stream
 
   Write-Host ("    Check INTERRUPT MODERATION Status of NIC " + $NICNAME + " .") -ForegroundColor Gray
-  
+
   if ($EEEVALUE -eq "0")
     {
     Write-Host ("    The INTERRUPT MODERATION is already disabled on NIC " + $NICNAME + ", so, nothing to do. :-)") -ForegroundColor Green
@@ -572,7 +572,7 @@ foreach ($adapter in $NICs)
       {
       $DISABLEIMOK = $false
       Write-Host ("  The INTERRUPT MODERATION on NIC " + $NICNAME + ", could not set to disabled. :-(") -ForegroundColor Red
-      if ($DEDAILEDDEBUG -eq "ON") 
+      if ($DEDAILEDDEBUG -eq "ON")
         {Write-Host $_ -ForegroundColor Red}
       }
     }
@@ -590,15 +590,15 @@ if ($DISABLEIMOK -eq $true)
 # DISABLE ENERGY-EFFICIENT-ETHERNET ON ALL NIC's
 Write-Host "Start disabling ENERGY-EFFICIENT-ETHERNET on all NIC's" -ForegroundColor Cyan
 Write-Host "  Identify the NICs that actually support ENERGY-EFFICIENT-ETHERNET." -ForegroundColor Gray
-$NICs = Get-NetAdapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*EEE"} 
+$NICs = Get-NetAdapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*EEE"}
 $DISABLEEEEEOK = $true
-foreach ($adapter in $NICs) 
+foreach ($adapter in $NICs)
   {
-  $NICNAME = $adapter | Select-Object Name | Select Neme -ExpandProperty Name | Out-String -Stream
-  $EEEVALUE = $adapter | Select-Object RegistryValue | Select RegistryValue -ExpandProperty RegistryValue | Out-String -Stream 
+  $NICNAME = $adapter | Select-Object Name | Select Name -ExpandProperty Name | Out-String -Stream
+  $EEEVALUE = $adapter | Select-Object RegistryValue | Select RegistryValue -ExpandProperty RegistryValue | Out-String -Stream
 
   Write-Host ("    Check EEE Status of NIC " + $NICNAME + " .") -ForegroundColor Gray
-  
+
   if ($EEEVALUE -eq "0")
     {
     Write-Host ("    The EEE is already disabled on NIC " + $NICNAME + ", so, nothing to do. :-)") -ForegroundColor Green
@@ -615,7 +615,7 @@ foreach ($adapter in $NICs)
       {
       $DISABLEEEEEOK = $false
       Write-Host ("  The EEE on NIC " + $NICNAME + ", could not set to disabled. :-(") -ForegroundColor Red
-      if ($DEDAILEDDEBUG -eq "ON") 
+      if ($DEDAILEDDEBUG -eq "ON")
         {Write-Host $_ -ForegroundColor Red}
       }
     }
@@ -632,14 +632,14 @@ if ($DISABLEEEEEOK -eq $true)
 
 # OPTIMIZE RECEIVE-BUFFERS ON ALL NIC's
 # Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*ReceiveBuffers"}
-$RECEIVEBUFFERSIZES = @(8192, 8184, 4096, 2048, 1024, 512, 256, 128)  
+$RECEIVEBUFFERSIZES = @(8192, 8184, 4096, 2048, 1024, 512, 256, 128)
 Write-Host "Start Receive-Buffer optimization" -ForegroundColor Cyan
-$NICs = Get-Netadapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*ReceiveBuffers"} 
-foreach ($adapter in $NICs) 
+$NICs = Get-Netadapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*ReceiveBuffers"}
+foreach ($adapter in $NICs)
   {
   $NICNAME = $adapter | Select-Object Name | Select Name -ExpandProperty Name | Out-String -Stream
   $CHANGERBOK = "NO"
-  foreach ($RECEIVEBUFFESIZE in $RECEIVEBUFFERSIZES) 
+  foreach ($RECEIVEBUFFESIZE in $RECEIVEBUFFERSIZES)
     {
     if ($CHANGERBOK -eq "NO")
       {
@@ -654,7 +654,7 @@ foreach ($adapter in $NICs)
         {
         Write-Host ("  Oops, the NIC " + $NICNAME + " does not accept a receive buffer size of " + $RECEIVEBUFFESIZE + "KB ... :-( ... never mind ... try with a smaller buffer next.") -ForegroundColor Yellow
         $CHANGERBOK = "NO"
-        if ($DEDAILEDDEBUG -eq "ON") 
+        if ($DEDAILEDDEBUG -eq "ON")
           {Write-Host $_ -ForegroundColor Red}
         }
       }
@@ -664,14 +664,14 @@ Write-Host "Receive-Buffer optimization is complitly finished." -ForegroundColor
 
 # OPTIMIZE TRANSMIT-BUFFERS ON ALL NIC's
 # Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*TransmitBuffers"}
-$TRANSMITBUFFERSIZES = @(8192, 8184, 4096, 2048, 1024, 512, 256, 128)  
+$TRANSMITBUFFERSIZES = @(8192, 8184, 4096, 2048, 1024, 512, 256, 128)
 Write-Host "Start Transmit-Buffer optimization" -ForegroundColor Cyan
-$NICs = Get-Netadapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*TransmitBuffers"} 
-foreach ($adapter in $NICs) 
+$NICs = Get-Netadapter -Physical | Get-NetAdapterAdvancedProperty | Where-Object -FilterScript {$_.RegistryKeyword -Like "*TransmitBuffers"}
+foreach ($adapter in $NICs)
   {
   $NICNAME = $adapter | Select-Object Name | Select Name -ExpandProperty Name | Out-String -Stream
   $CHANGETBOK = "NO"
-  foreach ($TRANSMITBUFFESIZE in $TRANSMITBUFFERSIZES) 
+  foreach ($TRANSMITBUFFESIZE in $TRANSMITBUFFERSIZES)
     {
     if ($CHANGETBOK -eq "NO")
       {
@@ -686,7 +686,7 @@ foreach ($adapter in $NICs)
         {
         Write-Host ("  Oops, the NIC " + $NICNAME + " does not accept a transmit buffer size of " + $TRANSMITBUFFESIZE + "KB ... :-( ... never mind ... try with a smaller buffer next.") -ForegroundColor Yellow
         $CHANGETBOK = "NO"
-        if ($DEDAILEDDEBUG -eq "ON") 
+        if ($DEDAILEDDEBUG -eq "ON")
           {Write-Host $_ -ForegroundColor Red}
         }
       }
@@ -694,15 +694,15 @@ foreach ($adapter in $NICs)
   }
 Write-Host "Transmit-Buffer optimization is complitly finished." -ForegroundColor Cyan
 
-# OPTIMIZE TCPACKFREQUENCY 
+# OPTIMIZE TCPACKFREQUENCY
 Write-Host "Start ACK-Frequency optimization" -ForegroundColor Cyan
 $NICs = Get-NetAdapter -Physical | Select-Object DeviceID, Name
 $CHANGETCPACKFREQUENCYOK = $true
-foreach ($adapter in $NICs) 
+foreach ($adapter in $NICs)
   {
   $NICGUID = $adapter | Select-Object DeviceID | Select DeviceID -ExpandProperty DeviceID | Out-String -Stream
-  $NICNAME = $adapter | Select-Object Name | Select Neme -ExpandProperty Name | Out-String -Stream
-  $REGKEYPATH = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\$NICGUID\" | Out-String -Stream 
+  $NICNAME = $adapter | Select-Object Name | Select Name -ExpandProperty Name | Out-String -Stream
+  $REGKEYPATH = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\$NICGUID\" | Out-String -Stream
 
   Write-Host ("  Check if the key already exists in the registry for NIC " + $NICNAME + " .") -ForegroundColor Gray
   $TARGETVALUE = 1
@@ -731,7 +731,7 @@ foreach ($adapter in $NICs)
         {
         $CHANGETCPACKFREQUENCYOK = $false
         Write-Host ("  The registry key for NIC " + $NICNAME + " could not be updated due to an error. :-(") -ForegroundColor Red
-        if ($DEDAILEDDEBUG -eq "ON") 
+        if ($DEDAILEDDEBUG -eq "ON")
           {Write-Host $_ -ForegroundColor Red}
         }
       }
@@ -748,7 +748,7 @@ foreach ($adapter in $NICs)
       {
       $CHANGETCPACKFREQUENCYOK = $false
       Write-Host ("  The registry key could not be created due to an error. :-(") -ForegroundColor Red
-      if ($DEDAILEDDEBUG -eq "ON") 
+      if ($DEDAILEDDEBUG -eq "ON")
         {Write-Host $_ -ForegroundColor Red}
       }
     }
@@ -763,15 +763,15 @@ if ($CHANGETCPACKFREQUENCYOK -eq $true)
     Write-Host "ACK-Frequency optimization can't finished successfully. :-(" -ForegroundColor Red
     }
 
-# OPTIMIZE TCPDELAY 
+# OPTIMIZE TCPDELAY
 Write-Host "Start TCP-Delay optimization" -ForegroundColor Cyan
 $NICs = Get-NetAdapter -Physical | Select-Object DeviceID, Name
 $CHANGETCPDELAYOK = $true
-foreach ($adapter in $NICs) 
+foreach ($adapter in $NICs)
   {
   $NICGUID = $adapter | Select-Object DeviceID | Select DeviceID -ExpandProperty DeviceID | Out-String -Stream
-  $NICNAME = $adapter | Select-Object Name | Select Neme -ExpandProperty Name | Out-String -Stream
-  $REGKEYPATH = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\$NICGUID\" | Out-String -Stream 
+  $NICNAME = $adapter | Select-Object Name | Select Name -ExpandProperty Name | Out-String -Stream
+  $REGKEYPATH = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\$NICGUID\" | Out-String -Stream
 
   Write-Host ("  Check if the key already exists in the registry for NIC " + $NICNAME + " .") -ForegroundColor Gray
   $TARGETVALUE = 1
@@ -800,7 +800,7 @@ foreach ($adapter in $NICs)
         {
         $CHANGETCPDELAYOK = $false
         Write-Host ("  The registry key for NIC " + $NICNAME + " could not be updated due to an error. :-(") -ForegroundColor Red
-        if ($DEDAILEDDEBUG -eq "ON") 
+        if ($DEDAILEDDEBUG -eq "ON")
           {Write-Host $_ -ForegroundColor Red}
         }
       }
@@ -817,7 +817,7 @@ foreach ($adapter in $NICs)
       {
       $CHANGETCPDELAYOK = $false
       Write-Host ("  The registry key could not be created due to an error. :-(") -ForegroundColor Red
-      if ($DEDAILEDDEBUG -eq "ON") 
+      if ($DEDAILEDDEBUG -eq "ON")
         {Write-Host $_ -ForegroundColor Red}
       }
     }
